@@ -1,0 +1,20 @@
+# Azure Developer CLI (azd) template for SRE Agent Workshop
+# Run: azd up
+name: sre-workshop
+metadata:
+  template: agentic-infraops-workshop@1.0.0
+
+infra:
+  provider: bicep
+  path: infra
+
+# No services block — Grubify container images are built in the cloud
+# via ACR Tasks in the post-provision hook. No Docker Desktop needed.
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./scripts/post-provision.ps1
+    posix:
+      shell: sh
+      run: bash ./scripts/post-provision.sh

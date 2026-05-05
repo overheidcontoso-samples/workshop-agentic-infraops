@@ -1,0 +1,23 @@
+{
+  "chat.customAgentInSubagent.enabled": true,
+  // "chat.tools.autoApprove": "allow",
+  "chat.tools.terminal.autoApprove": {
+    "mkdir": true,
+    "pwsh": true,
+    "$filter": true,
+    "Invoke-RestMethod": true,
+    "New-Item": true,
+    "Out-Null": true,
+    "/^az bicep build --file *": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "az": true
+  },
+  "chat.tools.urls.autoApprove": {
+    "https://code.visualstudio.com": true,
+    "https://github.com/microsoft/vscode/wiki/*": true,
+    "https://prices.azure.com": true,
+    "https://azure.github.io": true
+  }
+}

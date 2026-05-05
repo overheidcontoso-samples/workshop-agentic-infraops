@@ -1,0 +1,32 @@
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+~*.*
+
+# Editor metadata
+.vscode/*
+!.vscode/mcp.json
+!.vscode/mcp.template.json
+!.vscode/settings.json
+
+
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+sample/
+
+# Node
+node_modules/
+dist/
+build/
+*.log
+.env*
+
+output/*
+!output/.gitkeep
+

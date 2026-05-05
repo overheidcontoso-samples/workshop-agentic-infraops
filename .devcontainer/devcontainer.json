@@ -1,0 +1,28 @@
+{
+  "name": "Agentic InfraOps Workshop",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/azure/azure-dev/azd:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "hediet.vscode-drawio",
+        "ms-azuretools.vscode-azureresourcegroups",
+        "ms-azuretools.vscode-bicep",
+        "ms-vscode.azure-account",
+        "ms-azuretools.azure-dev"
+      ],
+      "settings": {
+        "chat.customAgentInSubagent.enabled": true
+      }
+    }
+  },
+  "postCreateCommand": "echo '✅ Dev container ready — open Copilot Chat and verify MCP servers (puzzle icon).'",
+  "remoteUser": "node"
+}
