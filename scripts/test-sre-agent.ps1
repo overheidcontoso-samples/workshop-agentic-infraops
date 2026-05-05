@@ -473,31 +473,11 @@ if ($Step -eq "all" -or $Step -eq "plan") {
     Write-Host "── Step 4d: Create Incident Response Plan ──────────────" -ForegroundColor Cyan
     Write-Host ""
 
-    # First check existing response plans on various endpoint paths
-    Write-Host "  Probing response plan endpoints..."
-    $planEndpoints = @(
-        "/api/v1/incidentPlayground/filters",
-        "/api/v1/incidentPlayground/responsePlans",
-        "/api/v2/incidentPlayground/filters",
-        "/api/v2/incidentPlayground/responsePlans",
-        "/api/v1/responsePlans",
-        "/api/v2/responsePlans",
-        "/api/v1/incidentManagement/responsePlans",
-        "/api/v2/incidentManagement/responsePlans"
-    )
-    $workingPlanEndpoint = $null
-    foreach ($ep in $planEndpoints) {
-        $probeResult = Invoke-SreApi -Method GET -Uri "$AGENT_ENDPOINT$ep"
-        if ($probeResult.Success) {
-            $workingPlanEndpoint = $ep
-            Write-Host "    Found working endpoint: $ep" -ForegroundColor Green
-        }
-    }
-    Write-Host ""
+    $filterUri = "$AGENT_ENDPOINT/api/v1/incidentPlayground/filters/grubify-http-errors"
 
-    # Delete any existing filters from previous runs
+    # Delete any existing filter from previous runs
     Write-Host "  Deleting existing grubify-http-errors filter (if present)..."
-    Invoke-SreApi -Method DELETE -Uri "$AGENT_ENDPOINT/api/v1/incidentPlayground/filters/grubify-http-errors" | Out-Null
+    Invoke-SreApi -Method DELETE -Uri $filterUri | Out-Null
     Write-Host ""
 
     $filterBody = @{
@@ -510,50 +490,19 @@ if ($Step -eq "all" -or $Step -eq "plan") {
         maxAttempts = 3
     } | ConvertTo-Json
 
+    # Create response plan with retry (Azure Monitor needs time to be ready)
     $result = $null
-
-    # If we found a working GET endpoint, try PUT and POST on it
-    if ($workingPlanEndpoint) {
-        Write-Host "  Trying PUT on discovered endpoint..."
-        $result = Invoke-SreApi `
-            -Method PUT `
-            -Uri "$AGENT_ENDPOINT$workingPlanEndpoint/grubify-http-errors" `
-            -Body $filterBody
-
-        if (-not $result.Success) {
-            Write-Host "  Trying POST on discovered endpoint..." -ForegroundColor Yellow
-            $result = Invoke-SreApi `
-                -Method POST `
-                -Uri "$AGENT_ENDPOINT$workingPlanEndpoint" `
-                -Body $filterBody
-        }
-
-        if (-not $result.Success) {
-            Write-Host "  Trying PATCH on discovered endpoint..." -ForegroundColor Yellow
-            $result = Invoke-SreApi `
-                -Method PATCH `
-                -Uri "$AGENT_ENDPOINT$workingPlanEndpoint/grubify-http-errors" `
-                -Body $filterBody
-        }
-    }
-
-    # Brute-force: try all endpoint + method combos
-    if (-not $result -or -not $result.Success) {
-        Write-Host "  Brute-force: trying all endpoint/method combos..." -ForegroundColor Yellow
-        $tried = @()
-        foreach ($ep in $planEndpoints) {
-            foreach ($method in @("PUT", "POST", "PATCH")) {
-                $uri = if ($method -eq "POST") { "$AGENT_ENDPOINT$ep" } else { "$AGENT_ENDPOINT$ep/grubify-http-errors" }
-                $key = "$method $uri"
-                if ($tried -contains $key) { continue }
-                $tried += $key
-                $result = Invoke-SreApi -Method $method -Uri $uri -Body $filterBody
-                if ($result.Success) {
-                    Write-Host "    FOUND WORKING COMBO: $method $ep" -ForegroundColor Green
-                    break
-                }
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        Write-Host "  Creating response plan (attempt $attempt/3)..."
+        $result = Invoke-SreApi -Method PUT -Uri $filterUri -Body $filterBody
+        if ($result.Success) {
+            Write-Host "    Response plan created successfully" -ForegroundColor Green
+            break
+        } else {
+            if ($attempt -lt 3) {
+                Write-Host "    Retrying in 10s..." -ForegroundColor Yellow
+                Start-Sleep -Seconds 10
             }
-            if ($result -and $result.Success) { break }
         }
     }
 
