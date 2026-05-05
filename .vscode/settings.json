@@ -12,7 +12,8 @@
       "approve": true,
       "matchCommandLine": true
     },
-    "az": true
+    "az": true,
+    "Test-Path": true
   },
   "chat.tools.urls.autoApprove": {
     "https://code.visualstudio.com": true,

@@ -11,7 +11,6 @@ The agentic IaC system uses MCP (Model Context Protocol) servers to give Copilot
 | **GitHub** | HTTP | Repository operations, PRs, code search, and context | Check Copilot Chat MCP status indicator (puzzle piece icon) |
 | **Microsoft Learn** | HTTP | Official Microsoft/Azure documentation search and retrieval | Ask a question about an Azure service and check for doc references |
 | **Context7** | HTTP | Up-to-date library and framework documentation lookup | Ask about a library API — response should cite current docs |
-| **Draw.io** | stdio | Generates architecture diagrams in Draw.io XML format | Look for `.drawio` file in output after diagram generation |
 | **WorkIQ** | stdio | M365 Copilot integration — queries calendar, email, Teams, and files | Ask "What meetings do I have today?" and verify results |
 | **Astro Docs** | stdio | Astro framework documentation search | Search for Astro-specific APIs or configuration |
 

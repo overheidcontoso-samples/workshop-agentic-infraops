@@ -12,14 +12,7 @@
       "type": "http",
       "url": "https://mcp.docs.astro.build/mcp"
     },
-    "drawio": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "drawio-mcp-server",
-        "--editor"
-      ]
-    },
+
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
