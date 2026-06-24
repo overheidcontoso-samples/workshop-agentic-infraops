@@ -35,7 +35,7 @@
 |-----------|-------|
 | Project | {{PROJECT_NAME}} |
 | Region | {{REGION}} |
-| IaC Tool | Bicep (with AVM modules) |
+| IaC Tool | <!-- Bicep (with AVM modules) / Terraform (with AVM modules) --> |
 | Deployment Strategy | <!-- Phased / Single --> |
 | Total Resources | <!-- e.g. 12 --> |
 | AVM Coverage | <!-- e.g. 10/12 (83%) --> |
@@ -48,13 +48,18 @@
 
 ## 📦 AVM Module Inventory
 
+<!-- Adjust the Module column format based on IaC tool:
+     Bicep:     avm/res/{service}/{resource}
+     Terraform: Azure/avm-res-{service}-{resource}/azurerm
+-->
+
 | Resource | AVM Module | Version | Status | Notes |
 |----------|-----------|---------|--------|-------|
 | <!-- e.g. App Service --> | <!-- e.g. avm/res/web/site --> | <!-- e.g. 0.11.0 --> | <!-- ✅ Available / ⚠️ Not found --> | |
 | <!-- e.g. SQL Database --> | <!-- e.g. avm/res/sql/server --> | <!-- e.g. 0.9.0 --> | <!-- ✅ Available --> | |
 | <!-- e.g. Storage Account --> | <!-- e.g. avm/res/storage/storage-account --> | <!-- e.g. 0.14.0 --> | <!-- ✅ Available --> | |
 
-**Legend:** ✅ AVM available (use module) | ⚠️ No AVM (raw Bicep resource) | 🔄 Deprecated (replacement needed)
+**Legend:** ✅ AVM available (use module) | ⚠️ No AVM (raw Bicep/Terraform resource) | 🔄 Deprecated (replacement needed)
 
 ---
 
@@ -65,6 +70,8 @@
 | 1 | <!-- Resource Group --> | `Microsoft.Resources/resourceGroups` | Raw | N/A | None | `rg-{{project}}-{{env}}-{{region}}` |
 | 2 | <!-- VNet --> | `Microsoft.Network/virtualNetworks` | AVM | Standard | RG | `vnet-{{project}}-{{env}}-{{region}}` |
 | 3 | <!-- Key Vault --> | `Microsoft.KeyVault/vaults` | AVM | Standard | RG, VNet | `kv-{{project}}-{{env}}-{{region}}` |
+
+<!-- AVM/Raw column: "AVM" means an AVM module exists for the chosen IaC tool; "Raw" means native Bicep resource or Terraform resource -->
 
 ---
 
@@ -197,6 +204,10 @@ graph TD
 
 ## 📁 Module Structure
 
+<!-- Use the structure matching your IaC tool. Delete the other. -->
+
+### Bicep
+
 ```
 output/{{project}}/infra/
 ├── azure.yaml              # azd project configuration
@@ -210,22 +221,59 @@ output/{{project}}/infra/
     └── monitoring.bicep    # Log Analytics, App Insights, Alert Rules
 ```
 
+### Terraform
+
+```
+output/{{project}}/infra/
+├── azure.yaml              # azd project configuration
+├── main.tf                 # Root module — provider config and module calls
+├── variables.tf            # Input variable declarations
+├── outputs.tf              # Output declarations
+├── terraform.tfvars        # Environment-specific values (non-sensitive)
+├── providers.tf            # Provider version constraints and backend
+└── modules/
+    ├── networking/         # VNet, subnets, NSGs
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── security/           # Key Vault, managed identities, private endpoints
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── data/               # SQL Server/DB, Storage Account
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── compute/            # App Service Plan, App Service, Functions
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    └── monitoring/         # Log Analytics, App Insights, Alert Rules
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf
+```
+
 ### Module Responsibilities
 
 | Module | Resources | Scope |
 |--------|-----------|-------|
-| `main.bicep` | Resource Group | Subscription |
-| `networking.bicep` | VNet, Subnets, NSGs | Resource Group |
-| `security.bicep` | Key Vault, Identities, Private Endpoints | Resource Group |
-| `data.bicep` | SQL Server + DB, Storage Account | Resource Group |
-| `compute.bicep` | App Service Plan, App Service, Functions | Resource Group |
-| `monitoring.bicep` | Log Analytics, App Insights, Alerts | Resource Group |
+| `main.bicep` / `main.tf` | Resource Group | Subscription / Root |
+| `networking` | VNet, Subnets, NSGs | Resource Group |
+| `security` | Key Vault, Identities, Private Endpoints | Resource Group |
+| `data` | SQL Server + DB, Storage Account | Resource Group |
+| `compute` | App Service Plan, App Service, Functions | Resource Group |
+| `monitoring` | Log Analytics, App Insights, Alerts | Resource Group |
 
 ---
 
 ## ⚙️ azd Configuration
 
 The `azure.yaml` file enables deployment via `azd up`:
+
+<!-- Use the provider matching your IaC tool -->
+
+**Bicep:**
 
 ```yaml
 name: {{project}}
@@ -234,6 +282,19 @@ metadata:
 
 infra:
   provider: bicep
+  path: .
+  module: main
+```
+
+**Terraform:**
+
+```yaml
+name: {{project}}
+metadata:
+  template: {{project}}@1.0.0
+
+infra:
+  provider: terraform
   path: .
   module: main
 ```
@@ -287,12 +348,13 @@ azd down         # Tear down all resources
 > |--------|-------|
 > | Total Resources | <!-- e.g. 12 --> |
 > | AVM Modules | <!-- e.g. 10 (83%) --> |
-> | Raw Bicep | <!-- e.g. 2 (17%) --> |
+> | Raw IaC | <!-- e.g. 2 (17%) --> |
+> | IaC Tool | <!-- Bicep / Terraform --> |
 > | Deployment Phases | <!-- e.g. 5 --> |
 > | Estimated Time | <!-- e.g. 15-20 min --> |
 > | Budget | {{BUDGET}}/month |
 >
-> - [ ] **Approved** — proceed to Bicep code generation
+> - [ ] **Approved** — proceed to IaC code generation
 > - [ ] **Revise** — iterate on specific sections
 > - Approver: ___
 > - Date: ___

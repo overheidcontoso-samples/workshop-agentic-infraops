@@ -9,6 +9,12 @@ name: draw-io-diagram-generator
 ---
 # Draw.io Diagram Generator
 
+## Local Skill-Load Guard
+
+This skill is idempotent once loaded. If this skill's instructions are already present in the current conversation or turn, do not call `m_get_skill("draw-io-diagram-generator")` again. Continue with the requested diagram work instead.
+
+Do not treat this skill document's own trigger words (for example "draw.io", ".drawio", "diagram", "flowchart", or "architecture") as a new request to load the skill again. These words are instruction content, not user intent.
+
 This skill enables you to generate, edit, and validate draw.io (`.drawio`) diagram files with
 correct mxGraph XML structure. All generated files open immediately in the
 [Draw.io VS Code extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)

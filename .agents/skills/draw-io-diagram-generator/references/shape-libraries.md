@@ -291,6 +291,105 @@ Use swimlane containers for class boxes:
 
 ---
 
+### Azure (official `azure2` SVG icon set — RECOMMENDED)
+
+**Enable**: `View > More Shapes > Networking > Azure` (uses the official Microsoft Azure icon SVGs bundled with draw.io desktop/web; available since draw.io 14.x)
+
+**Critical:** the modern Azure icons are NOT mxgraph stencils — they are bundled **SVG images** loaded via `image=img/lib/azure2/<category>/<File>.svg`. Always use this `image=...` pattern, NOT `shape=mxgraph.azure.*` (the old stencil set is incomplete and most names render as a blue square placeholder).
+
+**Standard style string** for any Azure icon:
+
+```
+image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/<CATEGORY>/<FILENAME>.svg;
+```
+
+Recommended cell geometry: `width=48 height=48` for the icon itself, with the label rendered below via `verticalLabelPosition=bottom;verticalAlign=top;`.
+
+**Verification workflow** (do this before bulk-generating icons):
+
+1. In draw.io, drag one icon from the target category onto the canvas
+2. Right-click → **Edit Style…**
+3. Copy the `image=img/lib/azure2/...svg` path — that is the ground truth
+4. Use the exact category folder + filename in your generated XML
+
+**Category folders under `img/lib/azure2/`** (drag-and-drop tested in draw.io 24+):
+
+| Category folder | Contents |
+| --- | --- |
+| `ai_machine_learning` | Azure OpenAI, AI Foundry, Cognitive Services, Content Safety, Azure ML, Cognitive Search, Speech, Document Intelligence |
+| `analytics` | Synapse, Stream Analytics, Data Factory, Event Hubs, Microsoft Fabric |
+| `app_services` | App Service, App Service Plan, Static Web Apps |
+| `compute` | App Services, Function Apps, Virtual Machines, Container Instances |
+| `containers` | Kubernetes Services (AKS), Container Apps, Container Registries |
+| `databases` | Azure SQL, Cosmos DB, MySQL, PostgreSQL, Managed Instance |
+| `devops` | Azure DevOps, GitHub, Pipelines |
+| `general` | Subscriptions, Resource Groups, Tags, Information, Cloud |
+| `identity` | Microsoft Entra ID, Managed Identity, Key Vaults |
+| `integration` | API Management Services, Logic Apps, Service Bus, Event Grid |
+| `management_governance` | Application Insights, Log Analytics Workspaces, Monitor, Cost Management and Billing, Policy, Microsoft Purview, Resource Manager |
+| `networking` | Virtual Networks, Front Door and CDN Profiles, Application Gateway, Load Balancer, DNS Zones, Private Endpoint |
+| `security` | Defender for Cloud, Microsoft Sentinel, Web Application Firewall |
+| `storage` | Storage Accounts, Blob Storage, Data Lake Storage Gen2, Storage Browser |
+| `web` | App Service, App Service Plan, API Connections |
+
+**Common verified style strings** (file path is case-sensitive on Linux/Mac; PascalCase with underscores):
+
+| Service | Style string |
+| --- | --- |
+| AKS | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/containers/Kubernetes_Services.svg;` |
+| Container Apps / Instances | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/containers/Container_Instances.svg;` *(no separate Container_Apps.svg exists)* |
+| Container Registry | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/containers/Container_Registries.svg;` |
+| App Service | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/app_services/App_Services.svg;` |
+| Function App | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/compute/Function_Apps.svg;` |
+| API Management | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/integration/API_Management_Services.svg;` |
+| Logic Apps | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/integration/Logic_Apps.svg;` |
+| Entra ID / Azure AD | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/identity/Azure_Active_Directory.svg;` *(filename in repo is still Azure_Active_Directory.svg, not Microsoft_Entra_ID.svg)* |
+| Key Vault | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/security/Key_Vaults.svg;` *(lives under `security/`, not `identity/`)* |
+| Virtual Network | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Virtual_Networks.svg;` |
+| Front Door / CDN | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/CDN_Profiles.svg;` *(use CDN_Profiles for combined Front Door/CDN)* |
+| Azure OpenAI | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;` |
+| AI Foundry / AI Studio | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;` *(no AI_Foundry.svg — Foundry is the rebrand of AI Studio in the repo)* |
+| Cognitive Services | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;` |
+| AI Content Safety | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Content_Safety.svg;` |
+| Azure Machine Learning | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Machine_Learning.svg;` *(filename is Machine_Learning.svg, NOT Azure_Machine_Learning.svg)* |
+| Azure AI Search | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;` *(no dedicated Cognitive_Search.svg in azure2 — fall back to Cognitive_Services)* |
+| Azure SQL | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_SQL.svg;` |
+| Cosmos DB | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Cosmos_DB.svg;` |
+| Storage Account | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Storage_Accounts.svg;` |
+| Application Insights | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Application_Insights.svg;` |
+| Log Analytics | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Log_Analytics_Workspaces.svg;` |
+| Azure Monitor | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Monitor.svg;` |
+| Cost Management | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Cost_Management_and_Billing.svg;` |
+| Azure Policy | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Policy.svg;` |
+| Microsoft Purview | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/management_governance/Microsoft_Purview.svg;` |
+| Azure DevOps | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/devops/Azure_DevOps.svg;` |
+| Synapse / "Fabric" stand-in | `image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/analytics/Azure_Synapse_Analytics.svg;` *(NO Microsoft_Fabric.svg exists in drawio's azure2 set — use Synapse or Data_Lake_Store_Gen1 as substitute)* |
+
+> **Verification reminder.** drawio's `azure2/` SVG set lives at  
+> `https://github.com/jgraph/drawio/tree/dev/src/main/webapp/img/lib/azure2/`  
+> Browse that repo directly to confirm a filename exists BEFORE generating XML. Filenames are case-sensitive on macOS/Linux. Common gotchas: services in `Identity` panel of drawio actually live under `azure2/security/` (Key_Vaults, Defender), and several brand renames (Entra ID = `Azure_Active_Directory.svg`, AI Foundry = `AI_Studio.svg`) lag behind Microsoft's naming.
+
+**Cell template** (drop-in for `<mxCell>`):
+
+```xml
+<mxCell id="az_aks" value="Azure Kubernetes Service&#10;(BD-NEX, EPIF)"
+        style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/containers/Kubernetes_Services.svg;verticalLabelPosition=bottom;verticalAlign=top;"
+        vertex="1" parent="1">
+  <mxGeometry x="100" y="100" width="48" height="48" as="geometry" />
+</mxCell>
+```
+
+**Common mistakes:**
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Icon shows as plain blue square | Used legacy `shape=mxgraph.azure.<name>` for a name that does not exist in that stencil set | Switch to `image=img/lib/azure2/...svg` pattern |
+| Icon shows as broken-image placeholder | Wrong path: typo in category folder, wrong filename casing, or `.svg` missing | Verify by dragging the actual icon and reading "Edit Style…" |
+| Icon visible in drawio web but missing on export | Bundled `azure2` SVGs only resolve inside drawio's image resolver | Use Export → SVG/PNG from inside drawio (resolves correctly), not external XML→SVG converters |
+| Label overlaps icon | Default style puts label centered on shape | Add `verticalLabelPosition=bottom;verticalAlign=top;` and make box `48×48` with label space below |
+
+---
+
 ## Enabling Libraries in VS Code
 
 Libraries are enabled inside the draw.io editor (which VS Code embeds):
